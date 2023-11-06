@@ -2,3 +2,5 @@
 .vs
 *.pyc
 *.pdf
+main.py
+*.txt

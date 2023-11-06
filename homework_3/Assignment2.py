@@ -1,3 +1,9 @@
+"""
+Erica Miller
+2031854
+"""
+
+
 class Team:
     def __init__(self):
         self.name = 'none'

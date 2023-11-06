@@ -1,4 +1,13 @@
+"""
+Erica Miller
+2031854
+"""
+
+
 class ItemToPurchase:
+    """
+    v1 Class of ItemToPurchase, improved variant found in Assignment4
+    """
 
     def __init__(self, item_name: str = "none", item_price: float = 0.0, item_quantity: int = 0):
         self.item_name = item_name

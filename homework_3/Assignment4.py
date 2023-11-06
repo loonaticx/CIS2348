@@ -1,4 +1,13 @@
+"""
+Erica Miller
+2031854
+"""
+
+
 class ItemToPurchase:
+    """
+    v2 Class of ItemToPurchase
+    """
 
     def __init__(self, item_name: str = "none", item_price: float = 0.0,
                  item_quantity: int = 0, item_description: str = 'none'):
@@ -9,7 +18,8 @@ class ItemToPurchase:
 
     # Since price+qty can change after init, we may need to recalculate the price when called for.
     @property
-    def total_cost(self):
+    def total_cost(self) -> int:
+        # Despite requiring item_price to be a float, the prompt does not like float values being used.
         return int(self.item_quantity * self.item_price)
 
     def print_item_cost(self):
@@ -20,14 +30,18 @@ class ItemToPurchase:
 
 
 class ShoppingCart:
-    def __init__(self, customer_name: str = 'none', current_date: str = "January 1, 2016", cart_items: list = []):
+    def __init__(self, customer_name: str = 'none', current_date: str = "January 1, 2016", cart_items=None):
+        if cart_items is None:
+            cart_items = []
         self.customer_name = customer_name
         self.current_date = current_date
-        self.cart_items = cart_items
+        self.cart_items = cart_items  # type: list[ItemToPurchase]
 
     def _baseinfo(self):
         """
-        John Doe's Shopping Cart - February 1, 2016
+        Prints common header line
+
+        Ex: John Doe's Shopping Cart - February 1, 2016
         """
         print(f"{self.customer_name}'s Shopping Cart - {self.current_date}")
 
@@ -38,6 +52,9 @@ class ShoppingCart:
         self.cart_items.append(item_to_purchase)
 
     def remove_item(self, itemName: str):
+        """
+        Removes item from cart_items list.
+        """
         for cart_item in self.cart_items:
             if cart_item.item_name == itemName:
                 self.cart_items.pop(self.cart_items.index(cart_item))
@@ -58,13 +75,19 @@ class ShoppingCart:
                 return
         print(f"Item not found in cart. Nothing modified.\n")
 
-    def get_num_items_in_cart(self):
+    def get_num_items_in_cart(self) -> int:
+        """
+        :return: Quantity of all items in cart
+        """
         total_items = 0
         for item_entry in self.cart_items:
             total_items += item_entry.item_quantity
         return total_items
 
-    def get_cost_of_cart(self):
+    def get_cost_of_cart(self) -> int:
+        """
+        Determines and returns the total cost of items in cart
+        """
         item_cost = 0
         for item_entry in self.cart_items:
             item_cost += item_entry.total_cost
@@ -74,7 +97,6 @@ class ShoppingCart:
         """
         Outputs total of objects in cart.
         """
-
         self._baseinfo()
         print(f"Number of Items: {self.get_num_items_in_cart()}")
         print()
@@ -83,7 +105,6 @@ class ShoppingCart:
         else:
             for item_entry in self.cart_items:
                 item_entry.print_item_cost()
-
         print()
         print(f"Total: ${self.get_cost_of_cart()}\n")
 
@@ -104,6 +125,7 @@ class ShoppingMenu:
         self.cart = shopping_cart
 
     def print_menu(self, show_full=True):
+        # Method can be static but just for the sake of organization let's keep it here
         if show_full:
             print("MENU")
             print("a - Add item to cart", end = '')
@@ -174,4 +196,5 @@ if __name__ == "__main__":
         elif option == "q":
             wannaExit = True
         else:
+            # Iff we type in an invalid character, do NOT show the full menu again.
             show_full = False

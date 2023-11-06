@@ -1,11 +1,22 @@
+"""
+Erica Miller
+2031854
+
+Prompt:
+    The given program accepts as input a food item name, fat, carbs, and protein and the number of servings.
+    It creates a food item using the constructor parameters' default values and a food item using the input values.
+    The program outputs the nutritional information and calories per serving for both food items.
+"""
+
+
 class FoodItem:
-    def __init__(self, name="None", fat=0.0, carbs=0.0, protein=0.0):
+    def __init__(self, name: str = "None", fat: float = 0.0, carbs: float = 0.0, protein: float = 0.0):
         self.name = name
         self.fat = fat
         self.carbs = carbs
         self.protein = protein
 
-    def get_calories(self, num_servings):
+    def get_calories(self, num_servings: float) -> float:
         # Calorie formula
         calories = ((self.fat * 9) + (self.carbs * 4) + (self.protein * 4)) * num_servings
         return calories

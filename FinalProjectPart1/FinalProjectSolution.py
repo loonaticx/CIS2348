@@ -1,3 +1,11 @@
+"""
+Erica Miller
+2031854
+
+
+A Program that manages student records at a university
+"""
+
 import csv
 from datetime import datetime
 
@@ -5,6 +13,11 @@ from datetime import datetime
 ### Student class generation ###
 # region
 class Student:
+    """
+    Contains the records of a single Student, including:
+    full name, student id, major, gpa, grad date, if they graduated yet, and disciplinary record.
+    """
+
     def __init__(self,
                  student_id: int,
                  last_name: str, first_name: str,
@@ -19,18 +32,21 @@ class Student:
         self.graduation_date = graduation_date
 
     def has_graduated(self) -> bool:
+        """
+        Has the student graduated yet? Cross-checks between the given date and today's date.
+        """
         month, day, year = self.graduation_date.split("/")
         grad_date = datetime(int(year), int(month), int(day))
         current_date = datetime.today()
         return grad_date <= current_date
 
 
-allRegisteredStudents = []
 # endregion
 
 ### Beginning of student input/parsing ###
 # region
 ext = ".csv"
+allRegisteredStudents = []
 
 # Open our file w/ all our students and parse data into a Student object
 with open(f'StudentsMajorsList-3{ext}') as csvFile:
@@ -111,11 +127,9 @@ def generate_full_roster():
 
 def generate_major_stats():
     """
-    List per major, i.e. ComputerInformationSystemsStudents.csv -- there should be a file for
-    each major and the major needs to be in the file name, the spaces in the major name
-    should be eliminated for the file name. Each row of the file should contain student ID,
-    last name, first name, graduation date, and indicate if disciplinary action was taken. The
-    students should be sorted by their student ID.
+    Generates a csv file for each major (spaces truncated) with the respective students with that major.
+    Contains student id, last name, first name, graduation date, disciplinary action indication.
+    Entries sorted via Student ID.
     """
     allMajors = dict()
 
@@ -139,21 +153,20 @@ def generate_major_stats():
         # Sort all entries by ID.
         for studentId in sorted(id2student.keys()):
             studentInfo = id2student[studentId]
-            lName = studentInfo.last_name
-            fName = studentInfo.first_name
+            lastName = studentInfo.last_name
+            firstName = studentInfo.first_name
             gradDate = studentInfo.graduation_date
             dpAction = studentInfo.disciplinary
-            csvwriter.writerow([studentId, lName, fName, gradDate, dpAction])
+            csvwriter.writerow([studentId, lastName, firstName, gradDate, dpAction])
 
         csvFileOut.close()
 
 
 def generate_scholarship_candidates():
     """
-    c. ScholarshipCandidates.csv – should contain a list of all eligible students with GPAs > 3.8.
-    Students who have graduated or have had disciplinary action taken are not eligible. Each
-    row should contain: student ID, last name, first name, major, and GPA. The students
-    must appear in the order of GPA from highest to lowest
+    Generates CSV file of all eligible students with GPAs > 3.8 and have not graduated or have had disciplinary action.
+    Contains Student ID, last name, first name, major, and GPA.
+    Sorted by highest GPA to lowest GPA.
     """
     # Open up a new file for writing.
     csvFilename = f"ScholarshipCandidates{ext}"
@@ -166,6 +179,9 @@ def generate_scholarship_candidates():
     for student in allRegisteredStudents:
         if not float(student.gpa) > 3.8 and (student.has_graduated() or student.disciplinary == "Y"):
             continue
+        # Just in case there is 2+ students with the same GPA,
+        # we will set the value as a list of Student objects.
+        # See if we've registered a key already:
         if not gpa2validStudents.get(student.gpa):
             gpa2validStudents[student.gpa] = [student]
         else:
@@ -176,19 +192,20 @@ def generate_scholarship_candidates():
         studentsWithGpa = gpa2validStudents[studentGpa]
         for student in studentsWithGpa:
             studentInfo = student
-            lName = studentInfo.last_name
-            fName = studentInfo.first_name
+            lastName = studentInfo.last_name
+            firstName = studentInfo.first_name
             studentMajor = studentInfo.student_major
             studentId = studentInfo.student_id
-            csvwriter.writerow([studentId, lName, fName, studentMajor, studentGpa])
+            csvwriter.writerow([studentId, lastName, firstName, studentMajor, studentGpa])
+
     csvFileOut.close()
 
 
 def generate_disciplined_students():
     """
-    DisciplinedStudents.csv –all students that have been disciplined. Each row should
-    contain: student ID, last name, first name, and graduation date. The students must
-    appear in the order of graduation date from oldest to most recent
+    Generates a CSV file with students that have been disciplined.
+    Contains the student ID, last name, first name, and graduation date.
+    Sorted by graduation date, from oldest to most recent.
     """
     # Open up a new file for writing.
     csvFilename = f"DisciplinedStudents{ext}"
@@ -201,6 +218,9 @@ def generate_disciplined_students():
     for student in allRegisteredStudents:
         if not student.disciplinary == "Y":
             continue
+        # Just in case there is 2+ students with the same grad date,
+        # we will set the value as a list of Student objects.
+        # See if we've registered a key already:
         if not gradDate2Students.get(student.graduation_date):
             gradDate2Students[student.graduation_date] = [student]
         else:
@@ -211,9 +231,9 @@ def generate_disciplined_students():
         for student in studentsWithGradDate:
             studentInfo = student
             studentId = studentInfo.student_id
-            lName = studentInfo.last_name
-            fName = studentInfo.first_name
-            csvwriter.writerow([studentId, lName, fName, gradDate])
+            lastName = studentInfo.last_name
+            firstName = studentInfo.first_name
+            csvwriter.writerow([studentId, lastName, firstName, gradDate])
     csvFileOut.close()
 
 

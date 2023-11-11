@@ -130,7 +130,7 @@ def generate_major_stats():
     # Now we will begin writing the CSV files:
     for majorName, majorStudents in allMajors.items():
         # Open up a new file for writing.
-        csvFilename = f"{majorName.strip()}{ext}"
+        csvFilename = f"{majorName.replace(' ', '')}{ext}"
         csvFileOut = open(csvFilename, 'w')
         csvwriter = csv.writer(csvFileOut)
         # Write header

@@ -18,11 +18,11 @@ class Student:
         self.gpa = gpa
         self.graduation_date = graduation_date
 
-    def hasGraduated(self) -> bool:
+    def has_graduated(self) -> bool:
         month, day, year = self.graduation_date.split("/")
         grad_date = datetime(int(year), int(month), int(day))
-        todays_date = datetime.today()
-        return grad_date <= todays_date
+        current_date = datetime.today()
+        return grad_date <= current_date
 
 
 allRegisteredStudents = []
@@ -30,7 +30,7 @@ allRegisteredStudents = []
 # Open our file w/ all our students and parse data into a Student object
 with open(f'StudentsMajorsList-3{ext}') as csvFile:
     csvReader = csv.reader(csvFile)
-    # Our disciplinary entries are half-baked. For ones who don't have any, create a entry with "N"
+    # Our disciplinary entries are half-baked. For ones who don't have any, create an entry with "N"
     # So that the sizes of our rows are balanced.
     for row in csvReader:
         if row[-1] == "":
@@ -53,10 +53,10 @@ for student in allRegisteredStudents:
 with open(f'GraduationDatesList-1{ext}') as csvFile:
     csvReader = csv.reader(csvFile)
     for row in csvReader:
-        studentId, gdate = row
+        studentId, gradDate = row
         studentEntry = id2student.get(studentId)
         if studentEntry:
-            studentEntry.graduation_date = gdate
+            studentEntry.graduation_date = gradDate
 
 # Now we need to register the GPAs.
 with open(f'GPAList-1{ext}') as csvFile:
@@ -68,7 +68,7 @@ with open(f'GPAList-1{ext}') as csvFile:
             studentEntry.gpa = gpa
 
 
-def partOne():
+def generate_full_roster():
     """
     The items should be sorted alphabetically by student last name.
     The student attributes must appear in this order in each row:
@@ -100,9 +100,9 @@ def partOne():
     csvFileOut.close()
 
 
-def partTwo():
+def generate_major_stats():
     """
-    List per major, i.e ComputerInformationSystemsStudents.csv -- there should be a file for
+    List per major, i.e. ComputerInformationSystemsStudents.csv -- there should be a file for
     each major and the major needs to be in the file name, the spaces in the major name
     should be eliminated for the file name. Each row of the file should contain student ID,
     last name, first name, graduation date, and indicate if disciplinary action was taken. The
@@ -139,7 +139,7 @@ def partTwo():
         csvFileOut.close()
 
 
-def partThree():
+def generate_scholarship_candidates():
     """
     c. ScholarshipCandidates.csv – should contain a list of all eligible students with GPAs > 3.8.
     Students who have graduated or have had disciplinary action taken are not eligible. Each
@@ -155,13 +155,14 @@ def partThree():
 
     gpa2validStudents = dict()
     for student in allRegisteredStudents:
-        if not float(student.gpa) > 3.8 and (student.hasGraduated() or student.disciplinary == "Y"):
+        if not float(student.gpa) > 3.8 and (student.has_graduated() or student.disciplinary == "Y"):
             continue
         if not gpa2validStudents.get(student.gpa):
             gpa2validStudents[student.gpa] = [student]
         else:
             gpa2validStudents[student.gpa].append(student)
 
+    # We have to reverse in order to get descending order
     for studentGpa in sorted(gpa2validStudents.keys(), reverse = True):
         studentsWithGpa = gpa2validStudents[studentGpa]
         for student in studentsWithGpa:
@@ -174,7 +175,7 @@ def partThree():
     csvFileOut.close()
 
 
-def partFour():
+def generate_disciplined_students():
     """
     DisciplinedStudents.csv –all students that have been disciplined. Each row should
     contain: student ID, last name, first name, and graduation date. The students must
@@ -183,6 +184,13 @@ def partFour():
     pass
 
 
-partOne()
-partTwo()
-partThree()
+### Driver Code ###
+if __name__ == "__main__":
+    # Part 1
+    generate_full_roster()
+    # Part 2
+    generate_major_stats()
+    # Part 3
+    generate_scholarship_candidates()
+    # Part 4
+    generate_disciplined_students()

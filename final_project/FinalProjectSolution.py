@@ -185,3 +185,4 @@ def partFour():
 
 partOne()
 partTwo()
+partThree()

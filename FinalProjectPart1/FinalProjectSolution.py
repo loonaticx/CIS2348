@@ -190,7 +190,32 @@ def generate_disciplined_students():
     contain: student ID, last name, first name, and graduation date. The students must
     appear in the order of graduation date from oldest to most recent
     """
-    pass
+    # Open up a new file for writing.
+    csvFilename = f"DisciplinedStudents{ext}"
+    csvFileOut = open(csvFilename, 'w')
+    csvwriter = csv.writer(csvFileOut)
+    # Write header
+    csvwriter.writerow(["Student ID", "Last Name", "First Name", "Graduation Date"])
+
+    gradDate2Students = dict()
+    for student in allRegisteredStudents:
+        if not student.disciplinary == "Y":
+            continue
+        if not gradDate2Students.get(student.graduation_date):
+            gradDate2Students[student.graduation_date] = [student]
+        else:
+            gradDate2Students[student.graduation_date].append(student)
+
+    for gradDate in sorted(gradDate2Students.keys()):
+        studentsWithGradDate = gradDate2Students[gradDate]
+        for student in studentsWithGradDate:
+            studentInfo = student
+            studentId = studentInfo.student_id
+            lName = studentInfo.last_name
+            fName = studentInfo.first_name
+            csvwriter.writerow([studentId, lName, fName, gradDate])
+    csvFileOut.close()
+
 
 # endregion
 

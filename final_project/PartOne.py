@@ -139,6 +139,13 @@ def partThree():
     row should contain: student ID, last name, first name, major, and GPA. The students
     must appear in the order of GPA from highest to lowest
     """
+
+def partFour():
+    """
+    DisciplinedStudents.csv –all students that have been disciplined. Each row should
+    contain: student ID, last name, first name, and graduation date. The students must
+    appear in the order of graduation date from oldest to most recent
+    """
     pass
 
 

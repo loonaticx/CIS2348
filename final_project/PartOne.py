@@ -1,18 +1,22 @@
-from dataclasses import dataclass
 import csv
 
 ext = ".csv"
 
 
-@dataclass
 class Student:
-    student_id: int
-    last_name: str
-    first_name: str
-    student_major: str
-    disciplinary: str = ""
-    gpa: str = ""
-    graduation_date: str = ""
+    def __init__(self,
+                 student_id: int,
+                 last_name: str, first_name: str,
+                 student_major: str, disciplinary: str = "",
+                 gpa: str = "", graduation_date: str = ""):
+        self.student_id = student_id
+        self.last_name = last_name
+        self.first_name = first_name
+        self.student_major = student_major
+        self.disciplinary = disciplinary
+        self.gpa = gpa
+        self.graduation_date = graduation_date
+
 
 
 allRegisteredStudents = []

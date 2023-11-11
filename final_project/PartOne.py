@@ -97,8 +97,37 @@ def partTwo():
     last name, first name, graduation date, and indicate if disciplinary action was taken. The
     students should be sorted by their student ID.
     """
-    pass
-    
+    allMajors = dict()
+
+    # Now we will register students' majors.
+    for student in allRegisteredStudents:
+        # Check to see if the major key already exists. If not, create it.
+        if not allMajors.get(student.student_major):
+            allMajors[student.student_major] = [student]
+        else:
+            allMajors[student.student_major].append(student)
+
+    # Now we will begin writing the CSV files:
+    for majorName, majorStudents in allMajors.items():
+        # Open up a new file for writing.
+        csvFilename = f"{majorName.strip()}{ext}"
+        csvFileOut = open(csvFilename, 'w')
+        csvwriter = csv.writer(csvFileOut)
+        # Write header
+        csvwriter.writerow(["Student ID", "Last Name", "First Name", "Graduation Date", "Disciplinary Action Taken"])
+
+        # Sort all entries by ID.
+        for studentId in sorted(id2student.keys()):
+            studentInfo = id2student[studentId]
+            lName = studentInfo.last_name
+            fName = studentInfo.first_name
+            gradDate = studentInfo.graduation_date
+            dpAction = studentInfo.disciplinary
+            csvwriter.writerow([studentId, lName, fName, gradDate, dpAction])
+
+        csvFileOut.close()
+
+
 def partThree():
     """
     c. ScholarshipCandidates.csv – should contain a list of all eligible students with GPAs > 3.8.

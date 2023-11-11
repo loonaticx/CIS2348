@@ -1,4 +1,5 @@
 import csv
+from datetime import datetime
 
 ext = ".csv"
 
@@ -17,6 +18,11 @@ class Student:
         self.gpa = gpa
         self.graduation_date = graduation_date
 
+    def hasGraduated(self) -> bool:
+        month, day, year = self.graduation_date.split("/")
+        grad_date = datetime(int(year), int(month), int(day))
+        todays_date = datetime.today()
+        return grad_date <= todays_date
 
 
 allRegisteredStudents = []
@@ -93,6 +99,7 @@ def partOne():
 
     csvFileOut.close()
 
+
 def partTwo():
     """
     List per major, i.e ComputerInformationSystemsStudents.csv -- there should be a file for
@@ -139,6 +146,33 @@ def partThree():
     row should contain: student ID, last name, first name, major, and GPA. The students
     must appear in the order of GPA from highest to lowest
     """
+    # Open up a new file for writing.
+    csvFilename = f"ScholarshipCandidates{ext}"
+    csvFileOut = open(csvFilename, 'w')
+    csvwriter = csv.writer(csvFileOut)
+    # Write header
+    csvwriter.writerow(["Student ID", "Last Name", "First Name", "Major", "GPA"])
+
+    gpa2validStudents = dict()
+    for student in allRegisteredStudents:
+        if not float(student.gpa) > 3.8 and (student.hasGraduated() or student.disciplinary == "Y"):
+            continue
+        if not gpa2validStudents.get(student.gpa):
+            gpa2validStudents[student.gpa] = [student]
+        else:
+            gpa2validStudents[student.gpa].append(student)
+
+    for studentGpa in sorted(gpa2validStudents.keys(), reverse = True):
+        studentsWithGpa = gpa2validStudents[studentGpa]
+        for student in studentsWithGpa:
+            studentInfo = student
+            lName = studentInfo.last_name
+            fName = studentInfo.first_name
+            studentMajor = studentInfo.student_major
+            studentId = studentInfo.student_id
+            csvwriter.writerow([studentId, lName, fName, studentMajor, studentGpa])
+    csvFileOut.close()
+
 
 def partFour():
     """

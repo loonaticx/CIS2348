@@ -1,9 +1,9 @@
 import csv
 from datetime import datetime
 
-ext = ".csv"
 
-
+### Student class generation ###
+# region
 class Student:
     def __init__(self,
                  student_id: int,
@@ -26,6 +26,11 @@ class Student:
 
 
 allRegisteredStudents = []
+# endregion
+
+### Beginning of student input/parsing ###
+# region
+ext = ".csv"
 
 # Open our file w/ all our students and parse data into a Student object
 with open(f'StudentsMajorsList-3{ext}') as csvFile:
@@ -68,6 +73,10 @@ with open(f'GPAList-1{ext}') as csvFile:
             studentEntry.gpa = gpa
 
 
+# endregion
+
+### Beginning of CSV Output functions ###
+# region
 def generate_full_roster():
     """
     The items should be sorted alphabetically by student last name.
@@ -183,6 +192,7 @@ def generate_disciplined_students():
     """
     pass
 
+# endregion
 
 ### Driver Code ###
 if __name__ == "__main__":

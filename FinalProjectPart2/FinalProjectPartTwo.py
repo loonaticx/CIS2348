@@ -54,9 +54,6 @@ class Student:
         """
         return self.disciplinary == "Y"
 
-    def is_valid(self) -> bool:
-        return not (self.has_graduated() and self.has_disciplinary_action())
-
 
     def isGpaApproximate(self, targetGpa:float, margin:float) -> bool:
         studentGpa = float(self.gpa)
@@ -79,7 +76,6 @@ class Student:
 # but immediately gets replaced by the first registered student.
 nullStudent = Student(0, "last", "first", "major", "disciplinary", "99.0", "9/9/9999")
 
-
 ### Beginning of student input/parsing ###
 # region
 ext = ".csv"
@@ -101,7 +97,6 @@ with open(f'StudentsMajorsList-3{ext}') as csvFile:
         # We can ignore students who have disciplinary action on record
         if not student.hasDisciplinaryAction():
             allRegisteredStudents.append(student)
-
 
 # We're not done registering our students just yet -- we need to open up two more CSV files
 # that hold graduation dates & GPA.
@@ -137,8 +132,8 @@ with open(f'GPAList-1{ext}') as csvFile:
 
 def searchForStudent(userInput):
     userInput = userInput.lower()
-    userMajor = ""  # todo: write code for unknown major or never registered
-    userGpa = 0.0  # todo: write code for gpa never registered
+    userMajor = ""
+    userGpa = 0.0
     registeredMajor = False
     registeredGpa = False
 
@@ -184,20 +179,37 @@ def searchForStudent(userInput):
                 closestStudent = student if deltaStudentGpa < deltaClosestGpa else closestStudent
 
     if validStudents:
-        print(f"Valid students found {validStudents} from {userMajor} | {userGpa}")
+        print(f"Valid students found:", end = " ")
+        print(*validStudents, sep = ' ; ')
+        # We only consider possible students if there are at least 2 potentially qualifying candidates
         if possibleStudents:
-            print(f"You may also consider {possibleStudents} from {userMajor} | {userGpa}")
+            print(f"You may also consider:", end = " ")
+            print(*possibleStudents, sep = ' ; ')
     else:
-        print(f"Closest match found: {closestStudent} from {userMajor} | {userGpa}")
+        # If we found a possible student but not a student with exactly the target GPA, put him as the closest student
+        if possibleStudents:
+            closestStudent = possibleStudents[0]
+        print(f"Closest match found: {closestStudent}")
+
 
 ### Driver Code ###
 if __name__ == "__main__":
     # Ask for major and GPA
-    # userInput = input().lower()
-    possibleGpas = [round(float(x / 10), 2) for x in range(0, 41)]
-    for major in allMajors:
-        for gpa in possibleGpas:
-            searchForStudent(f"{major} {gpa}")
+    while True:
+        userInput = input().lower()
+        if userInput == "q":
+            break
+        searchForStudent(userInput)
 
+    def doAllCombinations():
+        # Check from 0.0 to 4.0
+        possibleGpas = [round(float(x / 10), 2) for x in range(0, 41)]
+        # Check through 0.00 to 4.00
+        # possibleGpas = [round(float(x / 10), 3) for x in range(0, 401)]
 
+        for major in allMajors:
+            for gpa in possibleGpas:
+                searchForStudent(f"{major} {gpa}")
 
+    # Uncomment to run through every possible combination
+    # doAllCombinations()

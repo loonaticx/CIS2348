@@ -31,7 +31,7 @@ class Student:
         self.gpa = gpa
         self.graduation_date = graduation_date
 
-    def has_graduated(self) -> bool:
+    def hasGraduated(self) -> bool:
         """
         Has the student graduated yet? Cross-checks between the given date and today's date.
         """
@@ -177,7 +177,7 @@ def generate_scholarship_candidates():
 
     gpa2validStudents = dict()
     for student in allRegisteredStudents:
-        if not float(student.gpa) > 3.8 and (student.has_graduated() or student.disciplinary == "Y"):
+        if not float(student.gpa) > 3.8 and (student.hasGraduated() or student.disciplinary == "Y"):
             continue
         # Just in case there is 2+ students with the same GPA,
         # we will set the value as a list of Student objects.

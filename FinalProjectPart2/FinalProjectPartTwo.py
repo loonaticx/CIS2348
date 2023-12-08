@@ -37,7 +37,7 @@ class Student:
         self.gpa = gpa
         self.graduation_date = graduation_date
 
-    def has_graduated(self) -> bool:
+    def hasGraduated(self) -> bool:
         """
         Has the student graduated yet? Cross-checks between the given date and today's date.
         """
@@ -48,8 +48,10 @@ class Student:
         current_date = datetime.today()
         return grad_date <= current_date
 
-
-    def has_disciplinary_action(self) -> bool:
+    def hasDisciplinaryAction(self) -> bool:
+        """
+        :return: Boolean equivalent of disciplinary record
+        """
         return self.disciplinary == "Y"
 
     def is_valid(self) -> bool:
@@ -97,7 +99,7 @@ with open(f'StudentsMajorsList-3{ext}') as csvFile:
         student = Student(*row)
         allMajors.add(student.student_major.lower())
         # We can ignore students who have disciplinary action on record
-        if not student.has_disciplinary_action():
+        if not student.hasDisciplinaryAction():
             allRegisteredStudents.append(student)
 
 
@@ -118,7 +120,7 @@ with open(f'GraduationDatesList-1{ext}') as csvFile:
         studentEntry = id2student.get(studentId)
         if studentEntry:
             studentEntry.graduation_date = gradDate
-            if studentEntry.has_graduated():
+            if studentEntry.hasGraduated():
                 # Kill student if they have graduated
                 allRegisteredStudents.remove(studentEntry)
                 del id2student[studentId]

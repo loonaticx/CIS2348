@@ -58,14 +58,23 @@ class Student:
 
     def isGpaApproximate(self, targetGpa:float, margin:float) -> bool:
         studentGpa = float(self.gpa)
-        marginedGpa = [studentGpa + margin, studentGpa - margin]
-        # round
-        deltaGpa = targetGpa
-        return (studentGpa + margin == targetGpa) or (studentGpa - margin == targetGpa) or (studentGpa == targetGpa)
+
+        deltaGpa = abs(round(studentGpa - targetGpa, 2))
+
+        # Anything >0 is out of bounds
+        gpaBounds = [
+            round(deltaGpa - margin, 2),  # Lower bound of margin
+            round(deltaGpa, 2)  # Upper bound of margin
+        ]
+
+        # print(f"gpaBounds = {gpaBounds} | student {studentGpa} | target {targetGpa} | margin {margin}")
+        return (gpaBounds[0] <= 0) or (gpaBounds[1] <= margin) or studentGpa == targetGpa
 
 
 # endregion
 
+# Null student is a default dummy student that is temporarily assigned as the "closest" student,
+# but immediately gets replaced by the first registered student.
 nullStudent = Student(0, "last", "first", "major", "disciplinary", "99.0", "9/9/9999")
 
 
@@ -126,16 +135,16 @@ with open(f'GPAList-1{ext}') as csvFile:
 
 def searchForStudent(userInput):
     userInput = userInput.lower()
-    userMajor = ""
-    userGpa = 0.0
+    userMajor = ""  # todo: write code for unknown major or never registered
+    userGpa = 0.0  # todo: write code for gpa never registered
     registeredMajor = False
     registeredGpa = False
 
     for major in allMajors:
         if major in userInput:
             if registeredMajor:
-                print("Major registered twice?")
-                continue
+                # Major registered twice
+                return print("No such student")
             userMajor = major
             registeredMajor = True
 
@@ -143,10 +152,13 @@ def searchForStudent(userInput):
         entryVal = entry.replace(".", "")
         if entryVal.isnumeric():
             if registeredGpa:
-                print("Gpa registered already")
-                continue
+                # Gpa registered twice
+                return print("No such student")
             userGpa = float(entry)
             registeredGpa = True
+
+    if not registeredGpa or not registeredMajor:
+        return print("No such student")
 
     nullStudent.student_major = userMajor
 
@@ -157,6 +169,7 @@ def searchForStudent(userInput):
     for student in allRegisteredStudents:
         if student.student_major.lower() == userMajor:
             if student.isGpaApproximate(userGpa, 0.25):
+                # print(f"--- Student gpa {student.gpa} is close enough to {userGpa}")
                 if student.isGpaApproximate(userGpa, 0.1):
                     validStudents.append(student)
                 else:

@@ -3,7 +3,7 @@ Erica Miller
 2031854
 
 
-A Program that manages student records at a university
+A Program that searches for a student given a GPA and major
 """
 
 import csv
@@ -22,6 +22,12 @@ class Student:
         return f"{self.student_id} {self.first_name} {self.last_name} {self.gpa}"
 
     def __repr__(self):
+        """
+        String representation of the object, helps when printing a Student object
+
+        Example: print(Student)
+        >> 123456 john doe 4.0
+        """
         return f"{self.student_id} {self.first_name} {self.last_name} {self.gpa}"
 
     def __init__(self,
@@ -33,6 +39,7 @@ class Student:
         self.last_name = last_name
         self.first_name = first_name
         self.student_major = student_major
+        # Disciplinary is stored as a string (Y/N) value, hasDisciplinaryAction can be used to get boolean
         self.disciplinary = disciplinary
         self.gpa = gpa
         self.graduation_date = graduation_date
@@ -41,6 +48,8 @@ class Student:
         """
         Has the student graduated yet? Cross-checks between the given date and today's date.
         """
+        # If we don't have a graduation date stored yet, let's just assume they've graduated
+        # since we can't really work with unknown values.
         if not self.graduation_date:
             return True
         month, day, year = self.graduation_date.split("/")
@@ -54,13 +63,18 @@ class Student:
         """
         return self.disciplinary == "Y"
 
-
-    def isGpaApproximate(self, targetGpa:float, margin:float) -> bool:
+    def isGpaApproximate(self, targetGpa: float, margin: float) -> bool:
+        """
+        Checks to see if the target gpa equals or is close enough to our student's GPA.
+        Margin is an acceptable threshold that the student's gpa can differ.
+        """
         studentGpa = float(self.gpa)
 
         deltaGpa = abs(round(studentGpa - targetGpa, 2))
 
         # Anything >0 is out of bounds
+        # -- M --- T --- m -- | GPA line, M: upper, m: lower
+        # ---^^^^^^^^^^^^^--- | Acceptable values
         gpaBounds = [
             round(deltaGpa - margin, 2),  # Lower bound of margin
             round(deltaGpa, 2)  # Upper bound of margin
